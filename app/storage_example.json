@@ -1,0 +1,62 @@
+{
+  "hello": {
+    "tags": ["greeting"],
+    "priority": "normal",
+    "type": "text",
+    "response": "Hello! How can I help you today?"
+  },
+  "pricing": {
+    "tags": ["info", "pricing"],
+    "priority": "normal",
+    "type": "text",
+    "response": "Our pricing information is available at https://example.com/pricing"
+  },
+  "bye": {
+    "tags": ["farewell"],
+    "priority": "low",
+    "type": "text",
+    "response": "Goodbye! Have a nice day!"
+  },
+  "help": {
+    "tags": ["support"],
+    "priority": "critical",
+    "type": "text",
+    "response": "Sure! I can guide you. What do you need help with?"
+  },
+  "hours": {
+    "tags": ["info", "hours"],
+    "priority": "normal",
+    "type": "text",
+    "response": "Our business hours are Monday to Friday, 9 AM to 6 PM."
+  },
+  "contact": {
+    "tags": ["info", "contact"],
+    "priority": "normal",
+    "type": "text",
+    "response": "You can reach us at contact@example.com or call +123456789."
+  },
+  "refund": {
+    "tags": ["support", "billing"],
+    "priority": "high",
+    "type": "text",
+    "response": "To request a refund, please fill out the form at https://example.com/refund"
+  },
+  "shipping": {
+    "tags": ["info", "shipping"],
+    "priority": "normal",
+    "type": "text",
+    "response": "Our standard shipping takes 3-5 business days."
+  },
+  "thank": {
+    "tags": ["gratitude"],
+    "priority": "low",
+    "type": "text",
+    "response": "You're welcome! Happy to help."
+  },
+  "support": {
+    "tags": ["support"],
+    "priority": "critical",
+    "type": "text",
+    "response": "A support agent will contact you shortly."
+  }
+}

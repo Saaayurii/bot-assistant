@@ -1,0 +1,15 @@
+**/__pycache__/
+**/venv*/
+**/.venv*/
+
+app/storage.json
+app/data.jsonl
+app/chat_training_data.jsonl
+local_llm/models/*
+local_llm/vllm_source
+
+.pytest_cache/
+.pyc 
+.pyo
+.env
+.git/

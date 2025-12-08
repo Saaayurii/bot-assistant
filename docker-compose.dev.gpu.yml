@@ -1,0 +1,71 @@
+services:
+  backend:
+    user: "${UID}:${GID}"
+    build:
+      context: ./app
+      dockerfile: ../docker/backend/Dockerfile
+    container_name: backend
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env 
+    volumes:
+      - ./app:/app
+      - ./local_llm:/data  
+    command: uvicorn main:app --host=0.0.0.0 --port=9000 --log-level=info --reload
+    depends_on:
+      - redis
+      - llm
+
+  llm:
+    build:
+      context: ./local_llm
+      dockerfile: ../docker/llm/Dockerfile.gpu
+    container_name: llm
+    volumes:
+      - ./local_llm:/data
+    env_file:
+      - .env
+    command: >
+      vllm serve ${LLM_PATH}
+      --port 8000 
+      --host 0.0.0.0 
+      --dtype=auto
+      --uvicorn-log-level=debug 
+      --max-model-len=4096
+    deploy:   
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "curl", "http://${LLM_HOST}:${LLM_PORT}/health"]
+      interval: 30s 
+      timeout: 10s 
+      retries: 5
+
+  redis:
+    image: redis:8.2
+    container_name: redis_storage
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --bind 0.0.0.0
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  redis_data:
+

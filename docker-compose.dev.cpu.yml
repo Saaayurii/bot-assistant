@@ -1,0 +1,82 @@
+services:
+  backend:
+    user: "${UID}:${GID}"
+    build:
+      context: ./app
+      dockerfile: ../docker/backend/Dockerfile
+    container_name: backend
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env 
+    volumes:
+      - ./app:/app
+      - ./local_llm:/data  
+    command: uvicorn main:app --host=0.0.0.0 --port=9000 --log-level=info --reload
+    depends_on:
+      - redis
+      - llm
+
+  llm:
+    build:
+      context: ./local_llm/vllm_source/
+      dockerfile: ../../docker/llm/Dockerfile.cpu
+      target: vllm-dev
+      args:
+        PYTHON_VERSION: "3.13"
+        VLLM_CPU_DISABLE_AVX512: "true"
+        VLLM_CPU_AVX512BF16: "false"
+        VLLM_CPU_AVX512VNNI: "false"
+        VLLM_CPU_AMXBF16: "false"
+      x-bake:
+        platform: 
+          - linux/amd64
+          - linux/arm64
+    container_name: llm
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./local_llm/models:/models
+    env_file:
+      - .env
+    environment:
+      VLLM_CPU_KVCACHE_SPACE: "4"
+      VLLM_CPU_OMP_THREADS_BIND: "auto"
+      VLLM_USE_V1: "1"
+    command: >
+      vllm serve ${LLM_PATH}
+      --port 8000 
+      --host 0.0.0.0 
+      --dtype=bfloat16 
+      --uvicorn-log-level=debug 
+      --max-model-len=32768
+      --enforce-eager
+    healthcheck:
+      test: ["CMD-SHELL", "curl", "http://${LLM_HOST}:${LLM_PORT}/health"]
+      interval: 30s 
+      timeout: 10s 
+      retries: 5
+
+  redis:
+    image: redis:8.2
+    container_name: redis_storage
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --bind 0.0.0.0
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  redis_data:
+
