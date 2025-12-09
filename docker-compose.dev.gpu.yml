@@ -22,8 +22,10 @@ services:
       context: ./local_llm
       dockerfile: ../docker/llm/Dockerfile.gpu
     container_name: llm
+    ports:
+      - "8000:8000"
     volumes:
-      - ./local_llm:/data
+      - ./local_llm/models:/data
     env_file:
       - .env
     command: >

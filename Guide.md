@@ -41,6 +41,9 @@ HF_REPO_DIR="" # Name of a local directory that will be used instead of HF_REPO_
 - HF_REPO_FILE and HF_REPO_ID are variables used to fetch .gguf files from hugging_face.hub. llm_initializer will try to fetch them at building if you decide so. If you have a ready-to-use file with weights, then you can just place the file into bot-service/local_llm/models/ and set HF_REPO_FILE as the name of the file you just resited.
 - HF_ENDPOINT and HF_HUB_ENABLE_HF_TRANSFER are used to choose the east-europe (or any other) mirror for hugging_face.hub utility (most likely you will also need to use a VPN)
 
+> [!NOTE]
+> Knowledge base must be present in the $LOCAL_STORAGE destination. Otherwise, it will throw an error at runtime.
+
 ## Download a Model
 
 If you have 'hf' cli tool installed system-wide, you can use it to download models from huggingface_hub into bot-service/local_llm/models.
@@ -72,7 +75,7 @@ pip install -r requirements.txt # will take a while to download
 Now you can download models with environment variables from .env file. However, you always can use hf cli utility from huggingface_hub instead.
 
 ```bash
-python download_models.py
+python -m download_models
 ```
 
 ## Build the docker-compose
