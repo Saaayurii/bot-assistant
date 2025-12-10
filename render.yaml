@@ -17,11 +17,11 @@ services:
           type: redis
           name: bot-assistant-redis
           property: port
-      - key: REDIS_PASSWORD
+      - key: REDIS_URL
         fromService:
           type: redis
           name: bot-assistant-redis
-          property: password
+          property: connectionString
       - key: LLM_HOST
         value: api.openai.com
       - key: LLM_PORT
