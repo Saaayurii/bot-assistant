@@ -6,7 +6,7 @@ services:
       dockerfile: ../docker/backend/Dockerfile
     container_name: backend
     ports:
-      - "9000:9000"
+      - "0.0.0.0:9000:9000"
     env_file:
       - .env 
     volumes:
@@ -47,9 +47,9 @@ services:
       vllm serve ${LLM_PATH}
       --port 8000 
       --host 0.0.0.0 
-      --dtype=bfloat16 
+      --dtype=${LLM_DTYPE}
       --uvicorn-log-level=debug 
-      --max-model-len=32768
+      --max-model-len=${LLM_MAX_SEQUENCE_LENGTH}
       --enforce-eager
     healthcheck:
       test: ["CMD-SHELL", "curl", "http://${LLM_HOST}:${LLM_PORT}/health"]

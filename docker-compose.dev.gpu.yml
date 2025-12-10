@@ -6,7 +6,7 @@ services:
       dockerfile: ../docker/backend/Dockerfile
     container_name: backend
     ports:
-      - "9000:9000"
+      - "0.0.0.0:9000:9000"
     env_file:
       - .env 
     volumes:
@@ -32,9 +32,9 @@ services:
       vllm serve ${LLM_PATH}
       --port 8000 
       --host 0.0.0.0 
-      --dtype=auto
+      --dtype=${LLM_DTYPE}
       --uvicorn-log-level=debug 
-      --max-model-len=4096
+      --max-model-len=${LLM_MAX_SEQUENCE_LENGTH}
     deploy:   
       resources:
         reservations:

@@ -16,7 +16,9 @@ cp .env.example .env
 REDIS_PASSWORD="password"
 REDIS_HOST="redis"
 REDIS_PORT="6379"
-LLM_PATH="/data/name_of_the_model_file.gguf"
+LLM_PATH="/models/name_of_the_model_file.gguf"
+LLM_MAX_SEQUENCE_LENGTH="16384"
+LLM_DTYPE="bfloat16"
 LLM_PORT="8000"
 LLM_HOST="0.0.0.0"
 LLM_TIMEOUT="600"
@@ -36,6 +38,8 @@ HF_REPO_DIR="" # Name of a local directory that will be used instead of HF_REPO_
 ```
 
 - LLM_PATH is an env variable that points out the path to the AI model file with weights (it's a shared volume data)
+- LLM_MAX_SEQUENCE_LENGTH is an env variable that sets LLM's context memory
+- LLM_DTYPE is an env variable that defines an expected data type of LLM's weights. It's recommended to use bfloat16 for cpu. Otherwise you can just use "auto'.
 - LLM_MAX_TOKENS is an env variable allows to adjust amount of tokens for the LLM
 - LOCAL_STORAGE is a path to the storage.json with knowledge base. You can adjust it if you are going to run the app locally
 - HF_REPO_FILE and HF_REPO_ID are variables used to fetch .gguf files from hugging_face.hub. llm_initializer will try to fetch them at building if you decide so. If you have a ready-to-use file with weights, then you can just place the file into bot-service/local_llm/models/ and set HF_REPO_FILE as the name of the file you just resited.

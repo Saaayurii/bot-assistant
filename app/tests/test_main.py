@@ -15,7 +15,7 @@ def test_chat_webhook_success(tmp_path):
         "id": 123,
         "content": "Hello assistant!",
         "created_at": datetime.now(tz=timezone.utc).isoformat(),
-        "message_type": "text",
+        "message_type": "incoming",
         "conversation": {
             "id": 456,
             "status": "open",

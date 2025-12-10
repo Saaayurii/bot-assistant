@@ -17,7 +17,7 @@ vllm = VLLMClient()
 chat_data = {
     "event": "message_created",
     "id": 123,
-    "content": "Какая сейчас погода",
+    "content": "Подскажи какое сейчас время.",
     "created_at": datetime.now(tz=timezone.utc).isoformat(),
     "message_type": "incoming",
     "conversation": {

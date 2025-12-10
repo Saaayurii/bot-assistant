@@ -118,8 +118,12 @@ class VLLMClient:
                     )
                     resp.raise_for_status()
                     data = resp.json()
+
                     text = data["choices"][0]["text"].strip()
+                    text = text[text.find("{"):text.find("}")+1]
+
                     parsed: MessageSchema = parser.parse(text)
+
                     return parsed.type, parsed.priority, parsed.tags, parsed.content
                 except httpx.TimeoutException as e:
                     logger.error(f"{self.__class__.__name__}.send_message() got timeout exception", e)
@@ -132,5 +136,5 @@ class VLLMClient:
                     continue
                 finally:
                     counter += 1
-            raise VllmFailedAllRetriesException(f"{self.__class__.__name__}.send_message() failed to get response from LLM with all given retries, due to [{e}]")
+            raise VllmFailedAllRetriesException(f"{self.__class__.__name__}.send_message() failed to get response from LLM with all given retries")
 
