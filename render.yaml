@@ -1,0 +1,47 @@
+services:
+  # Backend FastAPI service
+  - type: web
+    name: bot-assistant
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    branch: dev
+    envVars:
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: bot-assistant-redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: bot-assistant-redis
+          property: port
+      - key: REDIS_PASSWORD
+        fromService:
+          type: redis
+          name: bot-assistant-redis
+          property: password
+      - key: LLM_HOST
+        value: api.openai.com
+      - key: LLM_PORT
+        value: "443"
+      - key: LLM_PATH
+        value: gpt-3.5-turbo
+      - key: LLM_MAX_TOKENS
+        value: "256"
+      - key: LLM_TIMEOUT
+        value: "30"
+      - key: LLM_RETRIES
+        value: "3"
+      - key: LOCAL_STORAGE
+        value: /app/storage.json
+      - key: OPENAI_API_KEY
+        sync: false
+    healthCheckPath: /api/v1/docs
+
+  # Redis service
+  - type: redis
+    name: bot-assistant-redis
+    plan: free
+    ipAllowList: []
